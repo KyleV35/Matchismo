@@ -309,7 +309,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Matchismo" id="ZHv-dQ-apb"/>
+                    <tabBarItem key="tabBarItem" title="Matchismo" image="TabBarIcon-1.png" id="ZHv-dQ-apb"/>
                     <connections>
                         <outlet property="flipDescriptionLabel" destination="VEx-IY-a8N" id="RRf-qS-R8S"/>
                         <outlet property="flipsLabel" destination="rOZ-m5-IZf" id="5Zg-p2-vxV"/>
@@ -767,7 +767,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Set" id="OYh-H4-xAL"/>
+                    <tabBarItem key="tabBarItem" title="Set" image="TabBarIcon-2.png" id="OYh-H4-xAL"/>
                     <connections>
                         <outlet property="flipDescriptionLabel" destination="BGL-AN-uCy" id="cf0-Rg-yo8"/>
                         <outlet property="flipsLabel" destination="Vvk-Rs-UDO" id="gVH-hP-Bso"/>
@@ -803,6 +803,10 @@
             <point key="canvasLocation" x="-373" y="442"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="TabBarIcon-1.png" width="30" height="30"/>
+        <image name="TabBarIcon-2.png" width="30" height="30"/>
+    </resources>
     <classes>
         <class className="CardGameViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/CardGameViewController.h"/>
