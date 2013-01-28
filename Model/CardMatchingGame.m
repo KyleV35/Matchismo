@@ -11,13 +11,23 @@
 @interface CardMatchingGame()
 @property (strong, nonatomic) NSMutableArray *cards;
 @property (nonatomic) int score;
-@property (nonatomic, strong) NSString* flipDescription;
 
 // Lets the game know how many cards it should be matching
 @property (nonatomic) NSUInteger numCardsToMatch;
+@property (strong, nonatomic) NSMutableArray *lastFlipArray;
+
+#define DEFAULT_NUM_CARDS_TO_MATCH 2
 @end
 
 @implementation CardMatchingGame
+
+/* Lazy instantiation */
+
+-(NSMutableArray*) lastFlipArray
+{
+    if (!_lastFlipArray) _lastFlipArray = [[NSMutableArray alloc] init];
+    return _lastFlipArray;
+}
 
 -(NSMutableArray *)cards
 {
@@ -25,13 +35,7 @@
     return _cards;
 }
 
--(NSString*)flipDescription
-{
-    if (!_flipDescription) _flipDescription = @"";
-    return _flipDescription;
-}
-
-- (id) initWithCardCount:(NSUInteger)cardCount usingDeck:(Deck *)deck numberOfCardsToMatch:(NSUInteger)numberToMatch
+- (id) initWithCardCount:(NSUInteger)cardCount usingDeck:(Deck *)deck
 {
     self = [super init];
     if (self) {
@@ -44,7 +48,7 @@
             }
         }
     }
-    self.numCardsToMatch = numberToMatch;
+    self.numCardsToMatch = DEFAULT_NUM_CARDS_TO_MATCH;
     return self;
 }
 
@@ -63,22 +67,26 @@
     bool wasMatchOrMismatch = NO;
     if (!card.isUnplayable) {
         if (!card.isFaceUp) {
+            //If this flip will turn some card face up, empty the old flip array
+            [self.lastFlipArray removeAllObjects];
+            
             if (self.numCardsToMatch == 2) {
                 wasMatchOrMismatch = [self handleTwoCardMatch:card];
-            } else if (self.numCardsToMatch == 3) {
-                wasMatchOrMismatch = [self handleThreeCardMatch:card];
+            } else {
+                NSLog(@"Unable to match %d number of cards", self.numCardsToMatch);
             }
+            
+            // Subtract points for flipping
             self.score -= FLIP_COST;
-            // If there was no match or mismatch, description
-            // should just say card was flipped
+            
+            // If there was no match or mismatch, result of last flip is just one card
             if (!wasMatchOrMismatch) {
-                self.flipDescription = [NSString stringWithFormat:@"Flipped Up: %@",card.contents];
+                [self.lastFlipArray addObjectsFromArray:@[card,@(-FLIP_COST)]];
             }
         }
         card.faceUp = !card.isFaceUp;
     }
 }
-
 
 /* Checks to see if two cards are turned face up.  If two cards are face up,
  * it checks if they are a match or not and updates the score accordingly.  Return YES
@@ -90,14 +98,23 @@
         if (otherCard.isFaceUp && !otherCard.isUnplayable) {
             int matchScore = [card match:@[otherCard]];
             if (matchScore) {
+                // Update Score
+                int pointsAwarded = matchScore * MATCH_BONUS;
+                self.score += pointsAwarded;
+                
+                // Make cards unplayable
                 otherCard.unplayable = YES;
                 card.unplayable = YES;
-                self.score += matchScore * MATCH_BONUS;
-                self.flipDescription = [NSString stringWithFormat:@"Matched %@ and %@ for %d points!",card.contents,otherCard.contents,matchScore * MATCH_BONUS];
+                
+                [self.lastFlipArray addObjectsFromArray:@[card,otherCard,@(pointsAwarded)]];
             } else {
+                // Update Score
+                int pointsSubtracted = MISMATCH_PENALTY;
+                self.score -= pointsSubtracted;
+                
+                // Turn other card over
                 otherCard.faceUp = NO;
-                self.flipDescription = [NSString stringWithFormat:@"%@ and %@ don't match! %d point penalty!",card.contents,otherCard.contents,MISMATCH_PENALTY];
-                self.score -= MISMATCH_PENALTY;
+                [self.lastFlipArray addObjectsFromArray:@[card,otherCard,@(-MISMATCH_PENALTY)]];
             }
             return YES;
         }
@@ -106,47 +123,11 @@
     return NO;
 }
 
-/* Checks to see if three cards are turned face up.  If three cards are face up,
- * it checks if they are a match or not and updates the score accordingly.  Return YES
- * if there was a match or a mismatch, returns NO if only one or two cards are faceup.
- */
--(BOOL)handleThreeCardMatch:(Card*)card
+
+- (NSArray*)resultsOfLastFlip
 {
-    Card* firstCard = nil;
-    Card* secondCard = nil;
-    for (Card* otherCard in self.cards) {
-        if (otherCard.isFaceUp && !otherCard.isUnplayable) {
-            if (!firstCard) {
-                firstCard = otherCard;
-            } else {
-                secondCard = otherCard;
-                break;
-            }
-        }
-    }
-    // If only two cards are turned up, return NO
-    if (!secondCard) {
-        return NO;
-    } else {
-        int matchScore = [card match:@[firstCard,secondCard]];
-        if (matchScore) {
-            firstCard.unplayable = YES;
-            secondCard.unplayable = YES;
-            card.unplayable = YES;
-            self.score += matchScore * MATCH_BONUS;
-            self.flipDescription = [NSString stringWithFormat:@"Matched %@,%@, and %@ for %d points!", card.contents, firstCard.contents, secondCard.contents, matchScore * MATCH_BONUS];
-        } else {
-            firstCard.faceUp = NO;
-            secondCard.faceUp = NO;
-            self.flipDescription = [NSString stringWithFormat:@"%@,%@, and %@ don't match! %d point penalty!",card.contents,firstCard.contents,secondCard.contents,MISMATCH_PENALTY];
-            self.score -= MISMATCH_PENALTY;
-        }
-        return YES;
-    }
-    return NO;
-
+    return [NSArray arrayWithArray:self.lastFlipArray];
 }
-
 
 -(void)setNumberOfCardsToMatch:(NSUInteger)numberToMatch
 {

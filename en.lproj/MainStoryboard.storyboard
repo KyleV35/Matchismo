@@ -287,32 +287,12 @@
                                     <action selector="dealButtonPressed" destination="2" eventType="touchUpInside" id="zn0-zS-vv6"/>
                                 </connections>
                             </button>
-                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" id="Z74-l3-Y4k">
-                                <rect key="frame" x="47" y="6" width="226" height="44"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <segments>
-                                    <segment title="Match Two"/>
-                                    <segment title="Match Three"/>
-                                </segments>
-                                <connections>
-                                    <action selector="gameTypeValueChanged:" destination="2" eventType="valueChanged" id="0bR-cr-qYl"/>
-                                </connections>
-                            </segmentedControl>
-                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" id="pZh-rg-nHd">
-                                <rect key="frame" x="101" y="419" width="118" height="23"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <connections>
-                                    <action selector="historySliderValueChanged:" destination="2" eventType="valueChanged" id="6D8-B4-1dH"/>
-                                </connections>
-                            </slider>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <connections>
                         <outlet property="flipDescriptionLabel" destination="VEx-IY-a8N" id="RRf-qS-R8S"/>
                         <outlet property="flipsLabel" destination="rOZ-m5-IZf" id="5Zg-p2-vxV"/>
-                        <outlet property="gameTypeSelector" destination="Z74-l3-Y4k" id="84b-iQ-PDg"/>
-                        <outlet property="historySlider" destination="pZh-rg-nHd" id="3pD-ZC-Nhz"/>
                         <outlet property="scoreLabel" destination="Gon-R2-KHj" id="Laf-K7-Vq2"/>
                         <outletCollection property="cardButtons" destination="Xwz-CP-gU8" id="c2Q-am-SYs"/>
                         <outletCollection property="cardButtons" destination="FaD-ul-bMN" id="h5d-Tg-DSs"/>

@@ -18,13 +18,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *flipDescriptionLabel;
 @property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *cardButtons;
 @property (strong, nonatomic) CardMatchingGame* game;
-@property (weak, nonatomic) IBOutlet UISegmentedControl *gameTypeSelector;
-
-/* This mutable array holds the label for each card flip to allow the user to 
-   view their flip history */
-@property (strong, nonatomic) NSMutableArray* flipHistory;
-// This slider allows the user to view their flip history
-@property (weak, nonatomic) IBOutlet UISlider *historySlider;
 
 @end
 
@@ -33,18 +26,8 @@
 - (CardMatchingGame *)game
 {
     /* The +2 for the number of cards is there because the UIsegementedControl begins at index 0, which needs to translate to a 2 card matching game. */
-    if (!_game)_game = [[CardMatchingGame alloc] initWithCardCount:self.cardButtons.count usingDeck:[[PlayingCardDeck alloc] init] numberOfCardsToMatch:self.gameTypeSelector.selectedSegmentIndex+2];
+    if (!_game)_game = [[CardMatchingGame alloc] initWithCardCount:self.cardButtons.count usingDeck:[[PlayingCardDeck alloc] init]];
     return _game;
-}
-
-- (NSMutableArray*)flipHistory
-{
-    if (!_flipHistory) {
-        _flipHistory = [[NSMutableArray alloc] init];
-        //Add a empty string for the start of the game
-        [_flipHistory addObject:@""];
-    }
-    return _flipHistory;
 }
 
 - (void)setCardButtons:(NSArray *)cardButtons
@@ -74,8 +57,59 @@
     self.scoreLabel.text = [NSString stringWithFormat:@"Score: %d", self.game.score];
     self.flipDescriptionLabel.adjustsFontSizeToFitWidth = YES;
     // Grab the text description of the flip from the model right when it is needed
-    self.flipDescriptionLabel.text = self.game.flipDescription;
-    self.flipDescriptionLabel.alpha = 1.0f;
+    [self updateFlipDescription];
+}
+
+- (void)updateFlipDescription {
+    NSArray* lastFlipArray = self.game.resultsOfLastFlip;
+    NSString* description = @"";
+    
+    // If there are some results
+    if ([lastFlipArray count]) {
+        // Just a flip up
+        if ([lastFlipArray count] ==2) {
+            description = [self createFlipUpString:lastFlipArray];
+        } else { // A Match or Mismatch
+            description = [self createMatchOrMismatchString:lastFlipArray];
+        }
+    }
+    self.flipDescriptionLabel.text = description;
+}
+
+- (NSString*)createMatchOrMismatchString:(NSArray*)flipResultsArray
+{
+    if (![[flipResultsArray lastObject] isKindOfClass:[NSNumber class]]) {
+        NSLog(@"Last element of flip results is not a number");
+        return nil;
+    }
+    int points = [[flipResultsArray lastObject] intValue];
+    int index = 0;
+    NSString *description = @"";
+    while (index < [flipResultsArray count]-1) {
+        if ([flipResultsArray[index] isKindOfClass:[Card class]]) {
+            Card* curCard = flipResultsArray[index];
+            // To create a list with &'s seperating the cards
+            if (index!= 0) {
+                description = [description stringByAppendingString:@"&"];
+            }
+            description = [description stringByAppendingString:curCard.contents];
+        } else {
+            NSLog(@"Non-card found in flip results");
+            return nil;
+        }
+        index++;
+    }
+    return (points > 0) ? [NSString stringWithFormat:@"Matched %@ for %d points!",description,points]: [NSString stringWithFormat:@"%@ don't match! %d penalty",description,points];
+}
+
+- (NSString*) createFlipUpString:(NSArray*)flipResultsArray {
+    if ([flipResultsArray[0] isKindOfClass:[Card class]]) {
+        Card* curCard = flipResultsArray[0];
+        return [NSString stringWithFormat:@"Flipped up %@!", curCard.contents];
+    } else {
+        NSLog(@"Non-card found in flip results");
+        return nil;
+    }
 }
 
 - (void)setFlipsCount:(NSUInteger)flipsCount
@@ -85,49 +119,19 @@
 }
 
 - (IBAction)flipCard:(UIButton *)sender {
-    self.gameTypeSelector.enabled = NO;
     [self.game flipCardAtIndex:[self.cardButtons indexOfObject:sender]];
     self.flipsCount++;
-    // Add the flip description to flipHistory
-    [self.flipHistory addObject:self.game.flipDescription];
-    
-    //Update the slider to reflect an additional flip
-    self.historySlider.maximumValue = self.flipsCount;
-    self.historySlider.value = self.historySlider.maximumValue;
     [self updateUI];
 }
 
 - (IBAction)dealButtonPressed {
     
-    //Reset the game, description for the +2 can be found in the comment on the getter for self.game
-    self.game = [[CardMatchingGame alloc] initWithCardCount:self.cardButtons.count usingDeck:[[PlayingCardDeck alloc] init] numberOfCardsToMatch:self.gameTypeSelector.selectedSegmentIndex+2];
-    
-    //Reset the history
-    self.flipHistory = [[NSMutableArray alloc] init];
-    [self.flipHistory addObject:@""];
+    //Reset the game
+    self.game = nil;
     
     self.flipsCount = 0;
     
     //Reset UI
-    self.historySlider.maximumValue = 0;
-    self.gameTypeSelector.enabled = YES;
     [self updateUI];
-}
-
-- (IBAction)gameTypeValueChanged:(UISegmentedControl *)sender {
-    [self.game setNumberOfCardsToMatch:sender.selectedSegmentIndex+2];
-}
-
-- (IBAction)historySliderValueChanged:(UISlider *)sender {
-    int flipToDisplay = floor(sender.value);
-    // If we move to present, set alpha back to 1.0
-    if (flipToDisplay == sender.maximumValue) {
-        self.flipDescriptionLabel.alpha = 1.0f;
-        self.flipDescriptionLabel.text = [self.flipHistory lastObject];
-    } else {
-        // If we move into history, turn alpha down
-        self.flipDescriptionLabel.alpha = .3f;
-        self.flipDescriptionLabel.text = [self.flipHistory objectAtIndex:flipToDisplay];
-    }
 }
 @end
