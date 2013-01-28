@@ -8,7 +8,6 @@
 
 #import "CardGameViewController.h"
 #import "PlayingCardDeck.h"
-#import "CardMatchingGame.h"
 
 @interface CardGameViewController ()
 
@@ -17,7 +16,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
 @property (weak, nonatomic) IBOutlet UILabel *flipDescriptionLabel;
 @property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *cardButtons;
-@property (strong, nonatomic) CardMatchingGame* game;
+@property (strong, nonatomic, readwrite) CardMatchingGame* game;
 
 @end
 
@@ -25,7 +24,7 @@
 
 - (CardMatchingGame *)game
 {
-    if (!_game)_game = [[CardMatchingGame alloc] initWithCardCount:self.cardButtons.count usingDeck:[[PlayingCardDeck alloc] init]];
+    if (!_game)_game = [[CardMatchingGame alloc] initWithCardCount:self.cardButtons.count usingDeck:[self getAppropriateDeck]];
     return _game;
 }
 
@@ -132,5 +131,11 @@
     
     //Reset UI
     [self updateUI];
+}
+
+- (Deck*) getAppropriateDeck
+{
+    NSLog(@"This method (getAppropriateDeck) should be implemented by a subclass.");
+    return nil;
 }
 @end
