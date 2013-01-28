@@ -34,27 +34,29 @@
     for (UIButton *cardButton in self.cardButtons) {
         Card *card = [self.game cardAtIndex:[self.cardButtons indexOfObject:cardButton]];
         if (card.isUnplayable) {
+            // For set, we will be have matched entries disappear completely
             cardButton.alpha = 0.0f;
         }
         if ([card isKindOfClass:[SetCard class]]) {
-            //If card is face up, display contents
+            // Always display contents for Set
+            [cardButton setAttributedTitle:[SetCardGameViewController convertSetCardToAttributedString:(SetCard*)card] forState:UIControlStateNormal];
             if (card.isFaceUp) {
-                
-                [cardButton setAttributedTitle:[SetCardGameViewController convertSetCardToAttributedString:(SetCard*)card] forState:UIControlStateNormal];
+                // Selected color, a nice goldish color
                 cardButton.backgroundColor = [UIColor colorWithRed:255 green:215 blue:0 alpha:0.5f];
-            } else { //If card is face down, display image
-                [cardButton setAttributedTitle:[SetCardGameViewController convertSetCardToAttributedString:(SetCard*)card] forState:UIControlStateNormal];
+            } else {
                 cardButton.backgroundColor = [UIColor clearColor];
                 
             }
         } else {
-            NSLog(@"Card Provided was not a Set Card!");
+            NSLog(@"Card provided was not a SetCard!");
         }
        
     }
 
 }
 
+/* This method converts the data encoding for a SetCard into its actual UI Display using
+ NSAttributedStrings */
 + (NSAttributedString*)convertSetCardToAttributedString:(SetCard*)card
 {
     NSString* baseString = [SetCardGameViewController baseStringWithSetCard:card];
@@ -65,10 +67,11 @@
     UIColor *color = [SetCardGameViewController colorWithSetCard:card];
     CGFloat shading = [SetCardGameViewController shadingWithSetCard:card];
     NSMutableAttributedString* attString = [[NSMutableAttributedString alloc] initWithString:fullLengthString];
+    
+    //Add attributes to string
     [attString addAttribute:NSStrokeColorAttributeName value:color range:[fullLengthString rangeOfString:fullLengthString]];
     [attString addAttribute:NSStrokeWidthAttributeName value:@-5 range:[fullLengthString rangeOfString:fullLengthString]];
     [attString addAttribute:NSForegroundColorAttributeName value:[color colorWithAlphaComponent:shading]  range:[fullLengthString rangeOfString:fullLengthString]];
-    
     
     return attString;
 }
@@ -149,6 +152,11 @@
     }
     [attStringArray addObject:[lastFlipArray lastObject]];
     return attStringArray;
+}
+
+- (NSString*) gameTitle
+{
+    return @"Set";
 }
 
 @end

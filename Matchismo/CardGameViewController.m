@@ -8,7 +8,6 @@
 
 #import "CardGameViewController.h"
 #import "PlayingCardDeck.h"
-#import "GameResult.h"
 
 @interface CardGameViewController ()
 
@@ -18,8 +17,6 @@
 @property (weak, nonatomic,readwrite) IBOutlet UILabel *flipDescriptionLabel;
 @property (strong, nonatomic,readwrite) IBOutletCollection(UIButton) NSArray *cardButtons;
 @property (strong, nonatomic, readwrite) CardMatchingGame* game;
-
-@property (strong, nonatomic) GameResult* gameResult;
 
 @end
 
@@ -32,15 +29,6 @@
         [_game setNumberOfCardsToMatch:[self numberOfCardsToMatch]];
     }
     return _game;
-}
-
-- (GameResult*)gameResult
-{
-    if (!_gameResult) {
-        _gameResult = [[GameResult alloc] init];
-        _gameResult.gameTitle = [self gameTitle];
-    }
-    return _gameResult;
 }
 
 - (void)setCardButtons:(NSArray *)cardButtons
@@ -146,7 +134,6 @@
 - (IBAction)flipCard:(UIButton *)sender {
     [self.game flipCardAtIndex:[self.cardButtons indexOfObject:sender]];
     self.flipsCount++;
-    self.gameResult.score = self.game.score;
     [self updateUI];
 }
 
@@ -156,7 +143,6 @@
     self.game = nil;
     
     self.flipsCount = 0;
-    self.gameResult = nil;
     
     //Reset UI
     [self updateUI];
@@ -164,16 +150,13 @@
 
 - (Deck*) getAppropriateDeck
 {
+    NSLog(@"This method (getAppropriateDeck) should be implemented by a subclass.");
     return nil;
 }
          
 - (NSUInteger) numberOfCardsToMatch
 {
+    NSLog(@"This method (numberOfCardsToMatch) should be implemented by a subclass.");
     return 0;
-}
-
-- (NSString*) gameTitle
-{
-    return nil;
 }
 @end

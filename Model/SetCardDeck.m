@@ -15,6 +15,7 @@
 {
     self = [super init];
     if (self) {
+        // Every combination of card
         for (NSUInteger shape=0; shape <= [SetCard maxShape]; shape++) {
             for (NSUInteger number=0; number <= [SetCard maxNumber]; number++) {
                 for (NSUInteger shading=0; shading <= [SetCard maxShading]; shading++) {

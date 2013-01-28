@@ -82,14 +82,10 @@
 
 - (int) match:(NSArray *)otherCards
 {
-    int shapeMatch = [self shapeMatch:otherCards];
-    if (shapeMatch) NSLog(@"Matched Shape");
-    int numberMatch = [self numberMatch:otherCards];
-    if (numberMatch) NSLog(@"Matched Number");
-    int colorMatch = [self colorMatch:otherCards];
-    if (colorMatch) NSLog(@"Matched Color");
-    int shadingMatch = [self shadingMatch:otherCards];
-    if (shadingMatch) NSLog(@"Matched Shading");
+    BOOL shapeMatch = [self shapeMatch:otherCards];
+    BOOL numberMatch = [self numberMatch:otherCards];
+    BOOL colorMatch = [self colorMatch:otherCards];
+    BOOL shadingMatch = [self shadingMatch:otherCards];
     if (shapeMatch && numberMatch && shadingMatch && colorMatch) {
         return SET_MATCH_SCORE;
     } else {
@@ -97,7 +93,9 @@
     }
 }
 
-- (int) shapeMatch:(NSArray*)otherCards
+#pragma mark - Set Match Methods
+
+- (BOOL) shapeMatch:(NSArray*)otherCards
 {
     NSMutableArray* shapeArray = [[NSMutableArray alloc] init];
     for (SetCard* card in otherCards) {
@@ -107,7 +105,7 @@
     return [SetCard setMatch:[NSArray arrayWithArray:shapeArray]];
 }
 
-- (int)numberMatch:(NSArray*)otherCards
+- (BOOL)numberMatch:(NSArray*)otherCards
 {
     NSMutableArray* numberArray = [[NSMutableArray alloc] init];
     for (SetCard* card in otherCards) {
@@ -117,7 +115,7 @@
     return [SetCard setMatch:[NSArray arrayWithArray:numberArray]];
 }
 
-- (int)shadingMatch:(NSArray*)otherCards
+- (BOOL)shadingMatch:(NSArray*)otherCards
 {
     NSMutableArray* shadingArray = [[NSMutableArray alloc] init];
     for (SetCard* card in otherCards) {
@@ -127,7 +125,7 @@
     return [SetCard setMatch:[NSArray arrayWithArray:shadingArray]];
 }
 
-- (int)colorMatch:(NSArray*)otherCards
+- (BOOL)colorMatch:(NSArray*)otherCards
 {
     NSMutableArray* colorArray = [[NSMutableArray alloc] init];
     for (SetCard* card in otherCards) {
@@ -137,28 +135,34 @@
     return [SetCard setMatch:[NSArray arrayWithArray:colorArray]];
 }
 
+#pragma mark - Helper Methods
 
 /* Values argument must have all values, including current cards values */
-+ (int)setMatch:(NSArray*)values
++ (BOOL)setMatch:(NSArray*)values
 {
     NSMutableArray* frequencyArray = [[NSMutableArray alloc] init];
+    //First create an array with bucks for each possible value
     for (NSUInteger i=0; i < NUM_VALUES; i++) {
         [frequencyArray addObject:@(0)];
     }
+    // Then update the count for each value using the array
     for (NSNumber* value in values) {
         frequencyArray[[value unsignedIntValue]] = @([frequencyArray[[value unsignedIntValue]] unsignedIntValue] +1);
     }
     NSUInteger numCards =[values count];
     bool isMatch = YES;
+    
+    /* Finally check if all the array buckets (indices) have exactly one entry,
+     if not, one bucket must have every entry for it to be a set Match. */
     for (NSUInteger i=0; i < NUM_VALUES; i++) {
         if ([frequencyArray[i] unsignedIntValue] == numCards) {
             isMatch = YES;
             break;
         } else if ([frequencyArray[i] unsignedIntValue] != 1) {
-            isMatch = NO; // Don't break, if one key has all the values, it is a match
+            isMatch = NO; // Don't break, if one key has all the values, it can still be a match
         }
     }
-    return isMatch ? 1 : 0;
+    return isMatch ? YES : NO;
 
 }
 

@@ -363,9 +363,6 @@
                                 <state key="highlighted">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
-                                <connections>
-                                    <action selector="sortByDate" destination="ATd-4p-MYR" eventType="touchUpInside" id="LKz-HV-U38"/>
-                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="tfW-aI-8zE">
                                 <rect key="frame" x="123" y="354" width="75" height="44"/>
@@ -378,9 +375,6 @@
                                 <state key="highlighted">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
-                                <connections>
-                                    <action selector="sortByScore" destination="ATd-4p-MYR" eventType="touchUpInside" id="BhG-TT-Xhl"/>
-                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="7B1-GV-l8B">
                                 <rect key="frame" x="225" y="354" width="75" height="44"/>
@@ -393,14 +387,11 @@
                                 <state key="highlighted">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
-                                <connections>
-                                    <action selector="sortByDuration" destination="ATd-4p-MYR" eventType="touchUpInside" id="Dtp-rf-gOI"/>
-                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Results" image="TabBarIcon-3.png" id="R0B-5o-nvx"/>
+                    <tabBarItem key="tabBarItem" title="Results" id="R0B-5o-nvx"/>
                     <connections>
                         <outlet property="display" destination="aKg-aE-GLW" id="BAM-PX-irf"/>
                     </connections>
@@ -879,7 +870,6 @@
     <resources>
         <image name="TabBarIcon-1.png" width="30" height="30"/>
         <image name="TabBarIcon-2.png" width="30" height="30"/>
-        <image name="TabBarIcon-3.png" width="30" height="30"/>
     </resources>
     <classes>
         <class className="CardGameViewController" superclassName="UIViewController">

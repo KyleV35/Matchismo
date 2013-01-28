@@ -47,6 +47,11 @@
     }
 }
 
+- (NSString*) gameTitle
+{
+    return @"Matchismo";
+}
+
 
 
 @end

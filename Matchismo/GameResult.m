@@ -20,7 +20,6 @@
 #define START_KEY @"StartDate"
 #define END_KEY @"EndDate"
 #define SCORE_KEY @"Score"
-#define GAME_TITLE_KEY @"GameTitle"
 
 
 + (NSArray *)allGameResults
@@ -45,7 +44,6 @@
             _start = resultDictionary[START_KEY];
             _end = resultDictionary[END_KEY];
             _score = [resultDictionary[SCORE_KEY] intValue];
-            _gameTitle = resultDictionary[GAME_TITLE_KEY];
             if (!_start || !_end) self = nil;
         }
     }
@@ -64,7 +62,7 @@
 
 - (id)asPropertyList
 {
-    return @{ START_KEY : self.start, END_KEY : self.end, SCORE_KEY : @(self.score), GAME_TITLE_KEY : self.gameTitle };
+    return @{ START_KEY : self.start, END_KEY : self.end, SCORE_KEY : @(self.score) };
 }
 
 // designated initializer
@@ -90,6 +88,7 @@
     [self synchronize];
 }
 
+// added after lecture
 
 #pragma mark - Sorting
 

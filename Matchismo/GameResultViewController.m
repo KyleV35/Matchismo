@@ -11,8 +11,8 @@
 #import "GameResult.h"
 
 @interface GameResultViewController ()
-@property (weak, nonatomic) IBOutlet UITextView *display;
-@property (nonatomic) SEL sortSelector;
+@property (weak, nonatomic) IBOutlet UITextView *display;  // wire this up to a UITextView
+@property (nonatomic) SEL sortSelector; // added after lecture
 @end
 
 @implementation GameResultViewController
@@ -20,11 +20,13 @@
 - (void)updateUI
 {
     NSString *displayText = @"";
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    formatter.dateStyle = NSDateFormatterShortStyle;             
-    formatter.timeStyle = NSDateFormatterShortStyle;
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init]; // added after lecture
+    formatter.dateStyle = NSDateFormatterShortStyle;             // added after lecture
+    formatter.timeStyle = NSDateFormatterShortStyle;             // added after lecture
+ // for (GameResult *result in [GameResult allGameResults]) { // version in lecture
     for (GameResult *result in [[GameResult allGameResults] sortedArrayUsingSelector:self.sortSelector]) { // sorted
-        displayText = [displayText stringByAppendingFormat:@"Score: %d (%@, %@, %0g)\n", result.score, result.gameTitle,[formatter stringFromDate:result.end], round(result.duration)];  // formatted date
+     // displayText = [displayText stringByAppendingFormat:@"Score: %d (%@, %0g)\n", result.score, result.end, round(result.duration)]; // version in lecture
+        displayText = [displayText stringByAppendingFormat:@"Score: %d (%@, %0g)\n", result.score, [formatter stringFromDate:result.end], round(result.duration)];  // formatted date
     }
     self.display.text = displayText;
 }
@@ -36,6 +38,10 @@
     [super viewWillAppear:animated];
     [self updateUI];
 }
+
+// Sorting section added after lecture.
+// See also the Sorting section in GameResult.[mh].
+// Wire up the three IBActions to the three buttons in the View.
 
 #pragma mark - Sorting
 
@@ -62,10 +68,7 @@
     self.sortSelector = @selector(compareEndDateToGameResult:);
 }
 
-- (IBAction)sortByScore
-{
-    self.sortSelector = @selector(compareScoreToGameResult:);
-}
+
 
 - (IBAction)sortByDuration
 {
