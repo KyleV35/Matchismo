@@ -25,7 +25,6 @@
 
 - (CardMatchingGame *)game
 {
-    /* The +2 for the number of cards is there because the UIsegementedControl begins at index 0, which needs to translate to a 2 card matching game. */
     if (!_game)_game = [[CardMatchingGame alloc] initWithCardCount:self.cardButtons.count usingDeck:[[PlayingCardDeck alloc] init]];
     return _game;
 }
