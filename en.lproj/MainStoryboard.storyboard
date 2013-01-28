@@ -23,7 +23,7 @@
             </objects>
             <point key="canvasLocation" x="-933" y="22"/>
         </scene>
-        <!--Playing Card Matching Game View Controller - Item-->
+        <!--Playing Card Matching Game View Controller - Matchismo-->
         <scene sceneID="5">
             <objects>
                 <viewController id="2" customClass="PlayingCardMatchingGameViewController" sceneMemberID="viewController">
@@ -309,7 +309,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item" id="ZHv-dQ-apb"/>
+                    <tabBarItem key="tabBarItem" title="Matchismo" id="ZHv-dQ-apb"/>
                     <connections>
                         <outlet property="flipDescriptionLabel" destination="VEx-IY-a8N" id="RRf-qS-R8S"/>
                         <outlet property="flipsLabel" destination="rOZ-m5-IZf" id="5Zg-p2-vxV"/>
@@ -336,7 +336,7 @@
             </objects>
             <point key="canvasLocation" x="-373" y="-110"/>
         </scene>
-        <!--Set Card Game View Controller - Item-->
+        <!--Set Card Game View Controller - Set-->
         <scene sceneID="yZG-hW-ErM">
             <objects>
                 <viewController id="StS-4f-jcr" customClass="SetCardGameViewController" sceneMemberID="viewController">
@@ -767,7 +767,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item" id="OYh-H4-xAL"/>
+                    <tabBarItem key="tabBarItem" title="Set" id="OYh-H4-xAL"/>
                     <connections>
                         <outlet property="flipDescriptionLabel" destination="BGL-AN-uCy" id="cf0-Rg-yo8"/>
                         <outlet property="flipsLabel" destination="Vvk-Rs-UDO" id="gVH-hP-Bso"/>

@@ -60,6 +60,7 @@
 #define FLIP_COST 1
 #define MISMATCH_PENALTY 2
 #define MATCH_BONUS 4
+#define SET_MATCH_BONUS 6
 
 - (void) flipCardAtIndex:(NSUInteger)index
 {
@@ -149,7 +150,7 @@
     } else {
         int matchScore = [card match:@[firstCard,secondCard]];
         if (matchScore) {
-            int pointsAwarded = matchScore * MATCH_BONUS;
+            int pointsAwarded = matchScore * SET_MATCH_BONUS;
             self.score += pointsAwarded;
             firstCard.unplayable = YES;
             secondCard.unplayable = YES;

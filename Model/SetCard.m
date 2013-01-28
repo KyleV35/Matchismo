@@ -14,6 +14,8 @@
 #define MAX_COLOR 2
 #define MAX_SHAPE 2
 
+#define SET_MATCH_SCORE 4
+
 @implementation SetCard
 
 + (NSUInteger) maxShape
@@ -88,7 +90,11 @@
     if (colorMatch) NSLog(@"Matched Color");
     int shadingMatch = [self shadingMatch:otherCards];
     if (shadingMatch) NSLog(@"Matched Shading");
-    return shapeMatch + numberMatch + shadingMatch + colorMatch;
+    if (shapeMatch && numberMatch && shadingMatch && colorMatch) {
+        return SET_MATCH_SCORE;
+    } else {
+        return 0;
+    }
 }
 
 - (int) shapeMatch:(NSArray*)otherCards

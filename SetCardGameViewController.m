@@ -33,6 +33,9 @@
     [super updateUI];
     for (UIButton *cardButton in self.cardButtons) {
         Card *card = [self.game cardAtIndex:[self.cardButtons indexOfObject:cardButton]];
+        if (card.isUnplayable) {
+            cardButton.alpha = 0.0f;
+        }
         if ([card isKindOfClass:[SetCard class]]) {
             //If card is face up, display contents
             if (card.isFaceUp) {
@@ -132,4 +135,20 @@
     }
     return shading;
 }
+
+- (NSArray*)convertLastFlipArrayToAttributedStrings:(NSArray*)lastFlipArray
+{
+    NSMutableArray* attStringArray = [[NSMutableArray alloc] init];
+    for (int i =0; i < ([lastFlipArray count] -1);i++) {
+        if ([lastFlipArray[i] isKindOfClass:[SetCard class]]) {
+            SetCard* curCard = lastFlipArray[i];
+            [attStringArray addObject:[SetCardGameViewController convertSetCardToAttributedString:curCard]];
+        } else {
+            NSLog(@"Non-SetCard found in lastFlipArray for Set");
+        }
+    }
+    [attStringArray addObject:[lastFlipArray lastObject]];
+    return attStringArray;
+}
+
 @end

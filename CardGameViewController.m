@@ -52,12 +52,14 @@
     [self updateFlipDescription];
 }
 
-- (void)updateFlipDescription {
+- (void)updateFlipDescription
+{
     NSArray* lastFlipArray = self.game.resultsOfLastFlip;
-    NSString* description = @"";
+    NSMutableAttributedString* description;
     
     // If there are some results
     if ([lastFlipArray count]) {
+        lastFlipArray = [self convertLastFlipArrayToAttributedStrings:lastFlipArray];
         // Just a flip up
         if ([lastFlipArray count] ==2) {
             description = [self createFlipUpString:lastFlipArray];
@@ -65,10 +67,25 @@
             description = [self createMatchOrMismatchString:lastFlipArray];
         }
     }
-    self.flipDescriptionLabel.text = description;
+    self.flipDescriptionLabel.attributedText = description;
 }
 
-- (NSString*)createMatchOrMismatchString:(NSArray*)flipResultsArray
+- (NSArray*)convertLastFlipArrayToAttributedStrings:(NSArray*)lastFlipArray
+{
+    NSMutableArray* attStringArray = [[NSMutableArray alloc] init];
+    for (int i =0; i < ([lastFlipArray count] -1);i++) {
+        if ([lastFlipArray[i] isKindOfClass:[Card class]]) {
+            Card* curCard = lastFlipArray[i];
+            [attStringArray addObject:[[NSMutableAttributedString alloc] initWithString:curCard.contents]];
+        } else {
+            NSLog(@"Non-card found in lastFlipArray");
+        }
+    }
+    [attStringArray addObject:[lastFlipArray lastObject]];
+    return attStringArray;
+}
+
+- (NSMutableAttributedString*)createMatchOrMismatchString:(NSArray*)flipResultsArray
 {
     if (![[flipResultsArray lastObject] isKindOfClass:[NSNumber class]]) {
         NSLog(@"Last element of flip results is not a number");
@@ -76,32 +93,36 @@
     }
     int points = [[flipResultsArray lastObject] intValue];
     int index = 0;
-    NSString *description = @"";
+    NSMutableAttributedString *description = [[NSMutableAttributedString alloc] initWithString:@""];
     while (index < [flipResultsArray count]-1) {
-        if ([flipResultsArray[index] isKindOfClass:[Card class]]) {
-            Card* curCard = flipResultsArray[index];
-            // To create a list with &'s seperating the cards
-            if (index!= 0) {
-                description = [description stringByAppendingString:@"&"];
-            }
-            description = [description stringByAppendingString:curCard.contents];
-        } else {
-            NSLog(@"Non-card found in flip results");
-            return nil;
+        NSMutableAttributedString* contents = flipResultsArray[index];
+        // To create a list with &'s seperating the cards
+        if (index!= 0) {
+            [description appendAttributedString:[[NSMutableAttributedString alloc] initWithString:@"&"]];
         }
+        [description appendAttributedString:contents];
         index++;
     }
-    return (points > 0) ? [NSString stringWithFormat:@"Matched %@ for %d points!",description,points]: [NSString stringWithFormat:@"%@ don't match! %d penalty",description,points];
+    
+    // Combine attributed string to create the flip descriptions
+    if (points > 0) { // Matched
+        NSMutableAttributedString* start = [[NSMutableAttributedString alloc] initWithString:@"Matched "];
+        [start appendAttributedString:description];
+        NSMutableAttributedString* end = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@" for %d points!",points]];
+        [start appendAttributedString:end];
+        return start;
+    } else { // Didn't Match
+        NSMutableAttributedString* end = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@" don't match! %d penalty",points]];
+        [description appendAttributedString:end];
+        return description;
+    }
 }
 
-- (NSString*) createFlipUpString:(NSArray*)flipResultsArray {
-    if ([flipResultsArray[0] isKindOfClass:[Card class]]) {
-        Card* curCard = flipResultsArray[0];
-        return [NSString stringWithFormat:@"Flipped up %@!", curCard.contents];
-    } else {
-        NSLog(@"Non-card found in flip results");
-        return nil;
-    }
+- (NSMutableAttributedString*) createFlipUpString:(NSArray*)flipResultsArray {
+    NSMutableAttributedString* curContents = flipResultsArray[0];
+    NSMutableAttributedString* start = [[NSMutableAttributedString alloc] initWithString:@"Flipped up "];
+    [start appendAttributedString:curContents];
+    return start;
 }
 
 - (void)setFlipsCount:(NSUInteger)flipsCount

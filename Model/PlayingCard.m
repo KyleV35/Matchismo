@@ -12,6 +12,9 @@
 
 @synthesize suit = _suit;
 
+#define SUIT_MATCH_SCORE 1
+#define RANK_MATCH_SCORE 4
+
 +(NSArray*)validSuits
 {
     static NSArray* validSuits = nil;
@@ -61,21 +64,11 @@
     if (otherCards.count==1) {
         PlayingCard* otherCard = [otherCards lastObject];
         if ([otherCard.suit isEqualToString:self.suit]) {
-            score = 1;
+            score = SUIT_MATCH_SCORE;
         } else if (otherCard.rank == self.rank) {
-            score = 4;
+            score = RANK_MATCH_SCORE;
         }
     }
-    if (otherCards.count == 2) {
-        PlayingCard* firstCard = [otherCards objectAtIndex:0];
-        PlayingCard* secondCard = [otherCards lastObject];
-        if ([firstCard.suit isEqualToString:self.suit] && [secondCard.suit isEqualToString:self.suit]) {
-            score = 2;
-        } else if (firstCard.rank == self.rank && secondCard.rank == self.rank) {
-            score = 8;
-        }
-    }
-    
     return score;
 }
 
