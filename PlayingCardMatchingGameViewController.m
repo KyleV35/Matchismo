@@ -14,6 +14,8 @@
 
 @implementation PlayingCardMatchingGameViewController
 
+#define NUMBER_OF_CARDS_TO_MATCH 2
+
 
 - (Deck*) getAppropriateDeck
 {
@@ -21,9 +23,9 @@
     return deck;
 }
 
-- (void) viewDidLoad
+- (NSUInteger) numberOfCardsToMatch
 {
-    [self.game setNumberOfCardsToMatch:2];
+    return NUMBER_OF_CARDS_TO_MATCH;
 }
 
 

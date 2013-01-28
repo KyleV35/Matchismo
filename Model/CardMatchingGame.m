@@ -72,8 +72,10 @@
             
             if (self.numCardsToMatch == 2) {
                 wasMatchOrMismatch = [self handleTwoCardMatch:card];
+            } else if (self.numCardsToMatch ==3) {
+                wasMatchOrMismatch = [self handleThreeCardMatch:card];
             } else {
-                NSLog(@"Unable to match %d number of cards", self.numCardsToMatch);
+                NSLog(@"Unable to match %d cards", self.numCardsToMatch);
             }
             
             // Subtract points for flipping
@@ -114,7 +116,7 @@
                 
                 // Turn other card over
                 otherCard.faceUp = NO;
-                [self.lastFlipArray addObjectsFromArray:@[card,otherCard,@(-MISMATCH_PENALTY)]];
+                [self.lastFlipArray addObjectsFromArray:@[card,otherCard,@(-pointsSubtracted)]];
             }
             return YES;
         }
@@ -122,6 +124,49 @@
     // Only one card is faceup
     return NO;
 }
+
+/* Checks to see if three cards are turned face up.  If three cards are face up,
+ * it checks if they are a match or not and updates the score accordingly.  Return YES
+ * if there was a match or a mismatch, returns NO if only one or two cards are faceup.
+ */
+-(BOOL)handleThreeCardMatch:(Card*)card
+{
+    Card* firstCard = nil;
+    Card* secondCard = nil;
+    for (Card* otherCard in self.cards) {
+        if (otherCard.isFaceUp && !otherCard.isUnplayable) {
+            if (!firstCard) {
+                firstCard = otherCard;
+            } else {
+                secondCard = otherCard;
+                break;
+            }
+        }
+    }
+    // If only two cards are turned up, return NO
+    if (!secondCard) {
+        return NO;
+    } else {
+        int matchScore = [card match:@[firstCard,secondCard]];
+        if (matchScore) {
+            int pointsAwarded = matchScore * MATCH_BONUS;
+            self.score += pointsAwarded;
+            firstCard.unplayable = YES;
+            secondCard.unplayable = YES;
+            card.unplayable = YES;
+            [self.lastFlipArray addObjectsFromArray:@[card, firstCard, secondCard, @(pointsAwarded)]];
+        } else {
+            int pointsSubtracted = MISMATCH_PENALTY;
+            self.score -= pointsSubtracted;
+            firstCard.faceUp = NO;
+            secondCard.faceUp = NO;
+            [self.lastFlipArray addObjectsFromArray:@[card, firstCard, secondCard, @(-pointsSubtracted)]];
+        }
+        return YES;
+    }
+    return NO;
+}
+
 
 
 - (NSArray*)resultsOfLastFlip

@@ -15,14 +15,16 @@
 
 @implementation SetCardGameViewController
 
+#define NUMBER_OF_CARDS_TO_MATCH 3
+
 - (Deck*)getAppropriateDeck
 {
     return [[SetCardDeck alloc] init];
 }
 
-- (void) viewDidLoad
+- (NSUInteger)numberOfCardsToMatch
 {
-    [self.game setNumberOfCardsToMatch:3];
+    return NUMBER_OF_CARDS_TO_MATCH;
 }
 
 @end

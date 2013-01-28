@@ -24,7 +24,10 @@
 
 - (CardMatchingGame *)game
 {
-    if (!_game)_game = [[CardMatchingGame alloc] initWithCardCount:self.cardButtons.count usingDeck:[self getAppropriateDeck]];
+    if (!_game) {
+        _game = [[CardMatchingGame alloc] initWithCardCount:self.cardButtons.count usingDeck:[self getAppropriateDeck]];
+        [_game setNumberOfCardsToMatch:[self numberOfCardsToMatch]];
+    }
     return _game;
 }
 
@@ -137,5 +140,11 @@
 {
     NSLog(@"This method (getAppropriateDeck) should be implemented by a subclass.");
     return nil;
+}
+         
+- (NSUInteger) numberOfCardsToMatch
+{
+    NSLog(@"This method (numberOfCardsToMatch) should be implemented by a subclass.");
+    return 0;
 }
 @end

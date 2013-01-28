@@ -81,9 +81,13 @@
 - (int) match:(NSArray *)otherCards
 {
     int shapeMatch = [self shapeMatch:otherCards];
+    if (shapeMatch) NSLog(@"Matched Shape");
     int numberMatch = [self numberMatch:otherCards];
-    int shadingMatch = [self shadingMatch:otherCards];
+    if (numberMatch) NSLog(@"Matched Number");
     int colorMatch = [self colorMatch:otherCards];
+    if (colorMatch) NSLog(@"Matched Color");
+    int shadingMatch = [self shadingMatch:otherCards];
+    if (shadingMatch) NSLog(@"Matched Shading");
     return shapeMatch + numberMatch + shadingMatch + colorMatch;
 }
 
