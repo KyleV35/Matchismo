@@ -11,11 +11,11 @@
 
 @interface CardGameViewController ()
 
-@property (weak, nonatomic) IBOutlet UILabel *flipsLabel;
+@property (weak, nonatomic,readwrite) IBOutlet UILabel *flipsLabel;
 @property (nonatomic) NSUInteger flipsCount;
-@property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
-@property (weak, nonatomic) IBOutlet UILabel *flipDescriptionLabel;
-@property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *cardButtons;
+@property (weak, nonatomic,readwrite) IBOutlet UILabel *scoreLabel;
+@property (weak, nonatomic,readwrite) IBOutlet UILabel *flipDescriptionLabel;
+@property (strong, nonatomic,readwrite) IBOutletCollection(UIButton) NSArray *cardButtons;
 @property (strong, nonatomic, readwrite) CardMatchingGame* game;
 
 @end
@@ -39,24 +39,15 @@
 
 - (void) updateUI
 {
-    // Only create this image once (outside the loop) to be efficient
-    UIImage *cardBackImage = [UIImage imageNamed:@"Matchismo.png"];
     for (UIButton *cardButton in self.cardButtons) {
         Card *card = [self.game cardAtIndex:[self.cardButtons indexOfObject:cardButton]];
-        //If card is face up, display contents
-        if (card.isFaceUp) {
-            [cardButton setTitle:card.contents forState:UIControlStateNormal];
-            //Need to set image to nil in order to display title properly
-            [cardButton setImage:nil forState:UIControlStateNormal];
-        } else { //If card is face down, display image
-            [cardButton setImage:cardBackImage forState:UIControlStateNormal];
-            [cardButton setTitle:nil forState:UIControlStateNormal];
-        }
         cardButton.enabled = !card.isUnplayable;
         cardButton.alpha = card.isUnplayable ? 0.3f : 1.0f;
     }
+
     self.scoreLabel.text = [NSString stringWithFormat:@"Score: %d", self.game.score];
     self.flipDescriptionLabel.adjustsFontSizeToFitWidth = YES;
+    
     // Grab the text description of the flip from the model right when it is needed
     [self updateFlipDescription];
 }
